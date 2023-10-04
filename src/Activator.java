@@ -1,7 +1,4 @@
-import java.util.List;
-import java.util.Scanner;
-import java.util.Stack;
-import java.util.Collection;
+import java.util.*;
 
 class AddService {
     private final Stack<Integer> stack;
@@ -14,20 +11,14 @@ class AddService {
         this.sum = 0;
     }
 
-//    public void push(final Collection<Integer> numbers) {
-//        for (final int number : numbers) {
-//            stack.push(number);
-//            stackCallBack.onPush(number);
-//            sum += number;
-//            stackCallBack.onSum(sum);
-//        }
-//    }
 
-    public void push(final int number) {
-        stack.push(number);
-        stackCallBack.onPush(number);
-        sum += number;
-        stackCallBack.onSum(sum);
+    public void push(final Collection<Integer> numbers) {
+        for (final int number : numbers) {
+            stack.push(number);
+            stackCallBack.onPush(number);
+            sum += number;
+            stackCallBack.onSum(sum);
+        }
     }
 
     public void pop() {
@@ -44,8 +35,8 @@ class AddService {
 
 public class Activator implements StackCallBack{
 
-    private AddService stack;
-    private Scanner scanner;
+    private final AddService stack;
+    private final Scanner scanner;
 
     public Activator() {
         this.stack = new AddService(this);
@@ -69,7 +60,7 @@ public class Activator implements StackCallBack{
         System.out.println("Sum of Stack Elements: " + sum);
     }
 
-    public void run() {
+    public void next() {
         boolean exit = false;
         while (!exit) {
             System.out.println("Choose an action:");
@@ -82,9 +73,9 @@ public class Activator implements StackCallBack{
             switch (choice) {
                 case 1:
                     System.out.print("Enter a value to push: ");
-                    int valueToPush = scanner.nextInt();
-                    scanner.nextLine();
-                    stack.push(valueToPush);
+                    String inputValue = scanner.nextLine();
+                    List<Integer> values = parseInteger(inputValue);
+                    stack.push(values);
                     break;
                 case 2:
                     stack.pop();
@@ -98,9 +89,20 @@ public class Activator implements StackCallBack{
         }
     }
 
+    private List<Integer> parseInteger(String inputValue) {
+        String[] parts = inputValue.split(" ");
+        List<Integer> values = new ArrayList<>();
+
+        for (String part : parts) {
+            int value = Integer.parseInt(part);
+            values.add(value);
+        }
+        return values;
+    }
+
     public static void main(String[] args) {
         final Activator callBack = new Activator();
 
-        callBack.run();
+        callBack.next();
     }
 }
